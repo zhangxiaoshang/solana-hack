@@ -1,6 +1,11 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
+  outputPath: 'docs',
+  publicPath: '/solana-hack/',
+  hash: true,
+  history: { type: 'hash' },
+
   nodeModulesTransform: {
     type: 'none',
   },
@@ -22,5 +27,6 @@ export default defineConfig({
 
     { path: '*', component: '@/pages/' },
   ],
+
   fastRefresh: {},
 });
