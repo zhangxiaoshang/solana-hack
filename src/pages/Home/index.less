@@ -1,0 +1,258 @@
+@content-width: 1130px;
+
+.Home {
+  background: #09093b;
+}
+
+.Header {
+  background: #09093b;
+
+  .content {
+    width: 1246px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .menus {
+    margin-left: auto;
+  }
+  .menuItem {
+    display: inline-block;
+    padding: 0 34px;
+
+    height: 64px;
+    line-height: 64px;
+  }
+  a {
+    font-size: 15px;
+    font-weight: 400;
+    color: #b2b2d9;
+  }
+  .activeMenuItem {
+    color: #fff;
+  }
+}
+
+.Banner {
+  width: 100%;
+  height: calc(100vh - 68px);
+  background: url(~@/assets/images/home-banner-bg.png) no-repeat center;
+  background-size: 100%;
+  text-align: center;
+
+  .slogan {
+    margin-top: 64px;
+  }
+  .arrow {
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+  }
+}
+
+.About {
+  .title {
+    margin-top: 112px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+
+    height: 612px;
+    width: @content-width;
+    margin: 0 auto;
+    background: url(~@/assets/images/about.png) no-repeat center right;
+  }
+
+  .text {
+    display: inline-block;
+    width: 458px;
+    margin-top: 50px;
+
+    font-size: 15px;
+    font-weight: 400;
+    color: #ffffff;
+    line-height: 36px;
+  }
+}
+
+.Server {
+  margin-bottom: 152px;
+  .content {
+    width: @content-width;
+    margin: 0 auto;
+  }
+
+  .wrapItems {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 138px;
+  }
+
+  .Item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 260px;
+    text-align: center;
+
+    padding-top: 78px;
+    background-position: top center;
+    background-repeat: no-repeat;
+
+    .name {
+      font-size: 24px;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .text {
+      font-size: 14px;
+      font-weight: 400;
+      color: #bebebe;
+      line-height: 26px;
+    }
+  }
+
+  .Item1 {
+    background-image: url(~@/assets/images/server-1.png);
+  }
+  .Item2 {
+    background-image: url(~@/assets/images/server-2.png);
+  }
+  .Item3 {
+    background-image: url(~@/assets/images/server-3.png);
+  }
+
+  .wrapCloud {
+    height: 310px;
+    background: url(~@/assets/images/cloud.png) no-repeat left center;
+    background-size: 310px;
+    padding-left: 380px;
+    margin-top: 90px;
+    padding-top: 1px;
+
+    .name {
+      font-size: 24px;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: 1px;
+
+      margin-bottom: 10px;
+      margin-top: 105px;
+    }
+    .text {
+      font-size: 12px;
+      font-weight: 400;
+      color: #bebebe;
+      line-height: 19px;
+    }
+  }
+}
+
+.Product {
+  margin-bottom: 152px;
+
+  .content {
+    width: @content-width;
+    margin: 0 auto;
+  }
+
+  .wrapItems {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 148px;
+  }
+  .item {
+    flex: 0 0 162px;
+    padding-top: 130px;
+
+    font-size: 12px;
+    font-weight: 400;
+    color: #bebebe;
+    line-height: 19px;
+
+    background-position: top center;
+    background-repeat: no-repeat;
+  }
+  .item1 {
+    background-image: url(~@/assets/images/product-1.png);
+  }
+  .item2 {
+    background-image: url(~@/assets/images/product-2.png);
+  }
+  .item3 {
+    background-image: url(~@/assets/images/product-3.png);
+  }
+  .item4 {
+    background-image: url(~@/assets/images/product-4.png);
+  }
+}
+
+.Partner {
+  margin-bottom: 170px;
+  .content {
+    width: @content-width;
+    margin: 0 auto;
+  }
+
+  .wrapItems {
+    margin-top: 90px;
+  }
+}
+
+.Footer {
+  width: 100%;
+  height: 250px;
+  background: url(~@/assets/images/footer-bg.png) no-repeat center;
+  background-size: cover;
+  padding-top: 42px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .wrapInput {
+    .input {
+      height: 54px;
+      width: 400px;
+      flex: 1;
+      background: transparent;
+      border: 1px solid #1ce9dd;
+      border-radius: 8px;
+      outline: none;
+      padding-left: 34px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #bebebe;
+    }
+    .submitBtn {
+      width: 130px;
+      height: 55px;
+      border-radius: 8px;
+      background: linear-gradient(270deg, #ffadad 0%, #1ce9dd 100%);
+      transform: translateX(-14px);
+
+      font-size: 14px;
+      font-weight: 400;
+      color: #0b3c3d;
+      text-align: center;
+      outline: none;
+      border: none;
+    }
+  }
+
+  .wrapLins {
+    margin-left: 54px;
+  }
+  .telegram,
+  .github {
+    margin-left: 40px;
+  }
+}
