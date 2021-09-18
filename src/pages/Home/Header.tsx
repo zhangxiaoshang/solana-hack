@@ -1,4 +1,5 @@
 import { NavLink } from 'umi';
+import logo from '@/assets/images/logo.png';
 import styles from './index.less';
 
 export default () => {
@@ -6,7 +7,7 @@ export default () => {
     <div className={styles.Header}>
       <div className={styles.content}>
         <a href="/" className={styles.logo}>
-          Mercury
+          <img src={logo} alt="logo" />
         </a>
 
         <div className={styles.menus}>
