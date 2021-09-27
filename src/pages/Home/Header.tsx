@@ -16,23 +16,26 @@ export default () => {
             </NavLink>
           </span>
           <span className={styles.menuItem}>
-            <NavLink to="/yuyanji" activeClassName={styles.activeMenuItem}>
-              预言机
+            <NavLink to="/hash-pool" activeClassName={styles.activeMenuItem}>
+              Hash pool
             </NavLink>
           </span>
           <span className={styles.menuItem}>
-            <NavLink to="/suanlichi" activeClassName={styles.activeMenuItem}>
-              算力池
+            <NavLink
+              to="/preview-machine"
+              activeClassName={styles.activeMenuItem}
+            >
+              Preview machine
             </NavLink>
           </span>
           <span className={styles.menuItem}>
-            <NavLink to="/moniqi" activeClassName={styles.activeMenuItem}>
-              模拟器
+            <NavLink to="/emulator" activeClassName={styles.activeMenuItem}>
+              Emulator
             </NavLink>
           </span>
           <span className={styles.menuItem}>
             <NavLink to="/white-pager" activeClassName={styles.activeMenuItem}>
-              白皮书
+              White paper
             </NavLink>
           </span>
         </div>

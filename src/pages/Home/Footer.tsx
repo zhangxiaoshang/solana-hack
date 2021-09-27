@@ -8,7 +8,7 @@ export default () => {
     <div className={styles.Footer}>
       <div className={styles.wrapInput}>
         <input type="text" className={styles.input} />
-        <button className={styles.submitBtn}>提交</button>
+        <button className={styles.submitBtn}>Submit</button>
       </div>
 
       <div className={styles.wrapLins}>

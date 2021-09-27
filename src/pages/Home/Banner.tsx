@@ -1,4 +1,4 @@
-import slogan from '@/assets/images/home-slogan.png';
+import slogan from '@/assets/images/home-slogan-en.png';
 import Arrow from '@/assets/images/home-banner-arrow.png';
 import styles from './index.less';
 

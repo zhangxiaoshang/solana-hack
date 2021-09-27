@@ -6,20 +6,29 @@ export default () => {
   return (
     <div className={styles.Product}>
       <div className={styles.content}>
-        <Title className={styles.title}>产品特性</Title>
+        <Title className={styles.title}>Product Features</Title>
 
         <div className={styles.wrapItems}>
           <span className={classNames(styles.item, styles.item1)}>
-            无需准入机制用户即可使用平台购买、交易份额化比特币挖矿算力；
+            Users can use the platform to purchase and trade shares of Bitcoin
+            cloud mining without access mechanism;
           </span>
           <span className={classNames(styles.item, styles.item2)}>
-            通过算力难度预言机与去中心化结算系统计算挖矿收益，确保投资回报公开透明，解决传统中心化收益分配作恶问题；
+            Mercury ensure investment returns and solve the problem of
+            traditional centralized income distribution by calculating mining
+            income through the cloud mining difficulty prediction machine and
+            decentralized settlement system;
           </span>
           <span className={classNames(styles.item, styles.item3)}>
-            ⽤户可以通过区块链⽹络将NFT转移到去中⼼化交易平台进⾏交易流通，解决云算⼒缺乏流动性问题；
+            Users can transfer NFTs to the decentralized trading platform
+            through the blockchain network, which solves the problem of lack of
+            liquidity in cloud mining;
           </span>
           <span className={classNames(styles.item, styles.item4)}>
-            具有未来收益权的NFT类似未来应收账款，可以接⼊到DeFi⽣态中进⾏类似抵押借贷、衍⽣品设计等多种⾦融操作；
+            The NFT, with future income rights, is similar to future accounts
+            receivable. Also, it can be accessed in DeFi ecology to perform
+            various financial operations, such as mortgage loan and derivative
+            design;
           </span>
         </div>
       </div>

@@ -4,6 +4,9 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  routes: [{ path: '/', component: '@/pages/Home' }],
+  routes: [
+    { path: '/', component: '@/pages/Home' },
+    { path: '*', component: '@/pages/Home' },
+  ],
   fastRefresh: {},
 });

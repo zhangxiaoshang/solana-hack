@@ -6,33 +6,57 @@ export default () => {
   return (
     <div className={styles.Server}>
       <div className={styles.content}>
-        <Title className={styles.title}>技术与服务</Title>
+        <Title className={styles.title}>Technical and service</Title>
 
         <div className={styles.wrapItems}>
           <span className={classNames(styles.Item, styles.Item1)}>
-            <span className={styles.name}>难度预⾔机</span>
+            <span className={styles.name}>Difficulty preview machine</span>
             <span className={styles.text}>
-              墨丘利采⽤去中⼼化预⾔机⽹络保证链上挖矿难度与实际挖矿难度⼀致，开发者可以通过智能合约订阅的⽅式监控挖矿难度变化，预⾔机同时提供多套收益预测模板供开发⼈员使⽤
+              Mercury uses a decentralized pre-machine network to ensure that
+              the mining difficulty on the chain is consistent with the actual
+              mining difficulty. Developers can monitor changes in mining
+              difficulty through smart contract subscriptions. The preview
+              machine provides multiple sets of revenue forecast templates for
+              developers to use
             </span>
           </span>
           <span className={classNames(styles.Item, styles.Item2)}>
-            <span className={styles.name}>去中⼼化清结算系统</span>
+            <span className={styles.name}>
+              Decentralized Liquidation and Settlement System
+            </span>
             <span className={styles.text}>
-              去中⼼化清结算系统是运⾏在区块链上的⾦融服务设施，系统维护多套挖矿收益分配算法，解决传统中⼼化云算⼒收益分配不透明的问题
+              The decentralized settlement system is a financial service
+              facility that runs on the blockchain. The system maintains
+              multiple sets of mining revenue distribution algorithms to solve
+              the problem of unfair revenue distribution in traditional
+              centralized cloud mining
             </span>
           </span>
           <span className={classNames(styles.Item, styles.Item3)}>
-            <span className={styles.name}>收益权NFT</span>
+            <span className={styles.name}>Beneficial right NFT</span>
             <span className={styles.text}>
-              墨丘利会向参与去中⼼云算⼒挖矿的⽤户发⾏代表其算⼒所有权的NFT，NFT可以在Cex和Dex中随意流通，⽤户交易所持有的NFT即等价于交易算⼒所有权，从⽽解决云算⼒流通困难的问题。
+              Mercury will send NFTs representing their cloud mining ownership
+              to the users who participate in cloud mining. NFTs can be
+              circulated in Cex and Dex easily, and the NFTs held by the user's
+              exchange are equivalent to transactions. Calculating ownership can
+              solve the problem of cloud mining and low liquidity.
             </span>
           </span>
         </div>
 
         <div className={styles.wrapCloud}>
-          <div className={styles.name}>去中⼼化云算⼒撮合平台</div>
+          <div className={styles.name}>
+            Decentralize cloud mining aggregation platform
+          </div>
           <div className={styles.text}>
-            DCM基于区块链技术将云算力与Defi相结合，通过去中心化的利益分配方式解决传统云算力平台道德风险的问题。Mercury会向参与去中心云算力挖矿的用户发行代表其算力所有权的NFT，NFT可以在Cex和Dex中随意流通，用户交易所持有的NFT即等价于交易算力所有权，从而解决云算力流通困难的问题。
+            Based on blockchain technology, DCM combines cloud mining and DeFi,
+            and solves the moral hazard problem in traditional cloud mining
+            platforms by using the decentralized benefit distribution method.
+            Mercury will issue NFTs representing their cloud mining ownership to
+            users participating in decentralized cloud mining. NFTs can be
+            circulated in Cex and Dex easily. The NFT held by user exchanges is
+            equivalent to transaction cloud mining ownership, which solve the
+            problem of low liquidity.
           </div>
         </div>
       </div>

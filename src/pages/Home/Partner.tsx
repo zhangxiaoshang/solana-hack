@@ -6,7 +6,7 @@ export default () => {
   return (
     <div className={styles.Partner}>
       <div className={styles.content}>
-        <Title>合作机构</Title>
+        <Title>Cooperative agency</Title>
 
         <div className={styles.wrapItems}>
           <img src={solana} alt="solana" />

@@ -5,11 +5,20 @@ export default () => {
   return (
     <div className={styles.About}>
       <div className={styles.content}>
-        <Title className={styles.title}>项目介绍</Title>
+        <Title className={styles.title}>Project Introduction</Title>
 
         <span className={styles.text}>
-          墨丘利是由Mercury
-          Lab团队开发维护的去中⼼化云算⼒服务平台，平台通过区块链技术将云算⼒与DeFi相结合，通过去中⼼化的利益分配⽅式解决传统云算⼒平台道德⻛险的问题。墨丘利会向参与去中⼼云算⼒挖矿的⽤户发⾏代表其算⼒所有权的NFT（⾮同质化代币），NFT可以在中⼼化和去中⼼化交易所中流通，⽤户交易所持有的NFT即等价于交易算⼒所有权，从⽽解决云算⼒流通困难的问题。
+          Mercury is a decentralized cloud mining service platform developed and
+          maintained by the Mercury Lab team. The platform combines cloud mining
+          with DeFi through blockchain technology, and solves the problem of
+          moral hazard in traditional cloud mining field, by using the
+          decentralized benefit distribution method. Mercury will send NFTs
+          (Non-Homogeneous Tokens) representing their cloud mining ownership to
+          users participating in the decentralized cloud mining. NFTs can be
+          circulated in the centralization and decentralization exchanges, The
+          NFT held by the user's exchange is equivalent to the ownership of the
+          transaction calculation, which solves the problem of cloud mining and
+          low liquidity.
         </span>
       </div>
     </div>
