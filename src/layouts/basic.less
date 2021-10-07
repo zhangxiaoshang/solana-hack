@@ -1,0 +1,32 @@
+.siderContent {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  background: linear-gradient(259deg, #ffadad 0%, #1ce9dd 100%);
+  padding: 68px 46px;
+
+  :global {
+    a {
+      line-height: 64px;
+      color: #626262;
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+
+  .activeNav {
+    color: #000;
+
+    &::after {
+      content: '👉';
+      padding-left: 12px;
+    }
+  }
+}
+
+.content {
+  height: 100vh;
+  overflow: auto;
+  background-color: #fff;
+}

@@ -5,10 +5,19 @@ export default defineConfig({
     type: 'none',
   },
   routes: [
-    { path: '/', component: '@/pages/Home' },
-    { path: '/hash-pool', component: '@/pages/Pool' },
+    // { path: '/', component: '@/pages/Home' },
+    {
+      path: '/',
+      component: '@/layouts/Basic',
+      routes: [
+        { path: '/pool', component: '@/pages/Pool' },
+        { path: '/mbtc', component: '@/pages/Mbtc' },
+        { path: '/swap', component: '@/pages/Swap' },
+        { path: '/income', component: '@/pages/Income' },
+      ],
+    },
 
-    { path: '*', component: '@/pages/Home' },
+    { path: '*', component: '@/pages/pool' },
   ],
   fastRefresh: {},
 });

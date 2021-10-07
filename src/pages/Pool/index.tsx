@@ -109,55 +109,41 @@ export default () => {
   };
 
   return (
-    <Layout>
-      <Layout>
-        <Sider theme="light">
-          <Menu theme="light" style={{ width: '100%' }} mode="inline">
-            <Menu.Item key="1">mBTC介绍</Menu.Item>
-            <Menu.Item key="2">算力池</Menu.Item>
-            <Menu.Item key="3">算力Swap</Menu.Item>
-            <Menu.Item key="4">收益</Menu.Item>
-          </Menu>
-        </Sider>
-        <Content>
-          <div className={styles.content}>
-            <Card title="算力池展示数据（2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT）">
-              <p>
-                <span>算力 </span>
-                <span>{accountInfo?.total}</span>
-              </p>
-              <p>
-                <span>开始时间 </span>
-                <span>
-                  {moment((accountInfo?.begin_time ?? 0) * 1000).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-                </span>
-              </p>
-              <p>
-                <span>结束时间 </span>
-                <span>
-                  {moment((accountInfo?.end_time ?? 0) * 1000).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-                </span>
-              </p>
-              <p>
-                <span>单位算力(T/D)价格 </span>
-                <span>{accountInfo?.price}</span>
-              </p>
-            </Card>
+    <div className={styles.content}>
+      <Card title="算力池展示数据（2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT）">
+        <p>
+          <span>算力 </span>
+          <span>{accountInfo?.total}</span>
+        </p>
+        <p>
+          <span>开始时间 </span>
+          <span>
+            {moment((accountInfo?.begin_time ?? 0) * 1000).format(
+              'YYYY-MM-DD HH:mm:ss',
+            )}
+          </span>
+        </p>
+        <p>
+          <span>结束时间 </span>
+          <span>
+            {moment((accountInfo?.end_time ?? 0) * 1000).format(
+              'YYYY-MM-DD HH:mm:ss',
+            )}
+          </span>
+        </p>
+        <p>
+          <span>单位算力(T/D)价格 </span>
+          <span>{accountInfo?.price}</span>
+        </p>
+      </Card>
 
-            <Card title="Order Book（2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P）">
-              <OrderBook transactions={transactions}></OrderBook>
-            </Card>
+      <Card title="Order Book（2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P）">
+        <OrderBook transactions={transactions}></OrderBook>
+      </Card>
 
-            <Card title="算力排行榜">
-              <Rank></Rank>
-            </Card>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
+      <Card title="算力排行榜">
+        <Rank></Rank>
+      </Card>
+    </div>
   );
 };
