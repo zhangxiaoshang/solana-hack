@@ -48,6 +48,11 @@ const dataSource = [
 
 export default () => {
   return (
-    <Table columns={columns} dataSource={dataSource} pagination={false}></Table>
+    <Table
+      rowKey={(raw) => raw.time + raw.account + raw.total}
+      columns={columns}
+      dataSource={dataSource}
+      pagination={false}
+    ></Table>
   );
 };

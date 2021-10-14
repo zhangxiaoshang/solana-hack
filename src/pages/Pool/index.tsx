@@ -5,11 +5,12 @@ import OrderBook from './OrderBook';
 import Rank from './Rank';
 import styles from './index.less';
 import moment from 'moment';
-
-const { binary_to_base58, base58_to_binary } = require('base58-js');
+import { binary_to_base58 } from 'base58-js';
+const ab2str = require('arraybuffer-to-string');
 
 const { Header, Footer, Sider, Content } = Layout;
 
+const POOL_ACCOUNT = 'CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5';
 interface IAccountInfo {
   is_initialized: boolean;
   total: number;
@@ -17,6 +18,9 @@ interface IAccountInfo {
   begin_time: number;
   end_time: number;
   sold: number;
+  atokenAccount: string;
+  mbitcoinAccount: string;
+  paymentAccount: string;
 }
 
 let connection: any;
@@ -37,6 +41,20 @@ export default () => {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      if (accountInfo) {
+        /** 获取mint */
+        const { atokenAccount } = accountInfo;
+        const publicKey = new PublicKey(atokenAccount);
+        const info = await connection.getParsedAccountInfo(publicKey);
+        const mint = info.value.data.parsed.info.mint;
+
+        console.log('mint', mint);
+      }
+    })();
+  }, [accountInfo]);
+
   const setup = async () => {
     const url = 'https://api.devnet.solana.com';
     connection = await new Connection(url);
@@ -50,8 +68,9 @@ export default () => {
 
   const getAccountInfo = async () => {
     // const address = '2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P';
-    const address = '2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT';
-    const publicKey = new PublicKey(address);
+    // const address = '2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT';
+    // const address = 'CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5';
+    const publicKey = new PublicKey(POOL_ACCOUNT);
     const { data } = await connection.getAccountInfo(publicKey);
 
     return convertJsData(data);
@@ -65,12 +84,33 @@ export default () => {
     const view_end_time = new DataView(arrayBuffer.buffer, 25, 8);
     const view_sold = new DataView(arrayBuffer.buffer, 33, 8);
 
+    // const view_addr1 = new DataView(arrayBuffer.buffer, 41, 32);
+    // const view_addr2 = new DataView(arrayBuffer.buffer, 49, 32);
+    // const view_addr3 = new DataView(arrayBuffer.buffer, 57, 32);
+
     const int8_is_initialized = view_is_initialized.getInt8(0);
     const u64_total = view_total.getBigUint64(0, true);
     const u64_price = view_price.getBigUint64(0, true);
     const u64_begin_time = view_begin_time.getBigUint64(0, true);
     const u64_end_time = view_end_time.getBigUint64(0, true);
     const u64_sold = view_sold.getBigUint64(0, true);
+
+    const arr1 = [];
+    const arr2 = [];
+    const arr3 = [];
+    for (let i = 41; i <= 72; i++) {
+      arr1.push(arrayBuffer[i]);
+    }
+    for (let i = 73; i <= 104; i++) {
+      arr2.push(arrayBuffer[i]);
+    }
+    for (let i = 105; i <= 136; i++) {
+      arr3.push(arrayBuffer[i]);
+    }
+
+    const atokenAccount = binary_to_base58(arr1);
+    const mbitcoinAccount = binary_to_base58(arr2);
+    const paymentAccount = binary_to_base58(arr3);
 
     const _accountInfo = {
       is_initialized: Boolean(int8_is_initialized),
@@ -79,8 +119,12 @@ export default () => {
       begin_time: Number(u64_begin_time),
       end_time: Number(u64_end_time),
       sold: Number(u64_sold),
+      atokenAccount,
+      mbitcoinAccount,
+      paymentAccount,
     };
 
+    console.log(_accountInfo);
     return _accountInfo;
   };
 
@@ -110,7 +154,7 @@ export default () => {
 
   return (
     <div className={styles.content}>
-      <Card title="算力池展示数据（2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT）">
+      <Card title={`算力池展示数据（${POOL_ACCOUNT}）`}>
         <p>
           <span>算力 </span>
           <span>{accountInfo?.total}</span>
