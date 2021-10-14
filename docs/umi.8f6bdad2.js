@@ -22736,7 +22736,7 @@
                 className: y.a.wrapInput,
                 children: [
                   Object(b['jsx'])(o['a'], {
-                    placeholder: '\u8bf7\u8f93\u5165\u6570\u91cf',
+                    placeholder: 'amount',
                     addonAfter: 'T',
                     size: 'large',
                     type: 'number',
@@ -22751,11 +22751,12 @@
                       (null === l || void 0 === l ? void 0 : l.price) / h['c'],
                   }),
                   Object(b['jsx'])(a['a'], {
+                    type: 'primary',
                     onClick: ne,
                     size: 'large',
                     className: y.a.buyBtn,
                     loading: J,
-                    children: '\u8d2d\u4e70',
+                    children: 'Buy',
                   }),
                 ],
               }),
