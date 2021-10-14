@@ -635,7 +635,7 @@ export default () => {
 
       <div className={styles.wrapInput}>
         <Input
-          placeholder="请输入数量"
+          placeholder="amount"
           addonAfter="T"
           size="large"
           type="number"
@@ -649,12 +649,13 @@ export default () => {
           value={poolInfo?.price / LAMPORTS_PER_SOL}
         />
         <Button
+          type="primary"
           onClick={handleBuy}
           size="large"
           className={styles.buyBtn}
           loading={buyLoading}
         >
-          购买
+          Buy
         </Button>
       </div>
     </div>
