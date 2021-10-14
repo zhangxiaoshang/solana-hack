@@ -591,7 +591,7 @@ export default () => {
   if (!account) {
     return (
       <div className={styles.errorContent}>
-        <Button type="text">Connect wallet</Button>
+        <Button type="text">👈 Connect wallet and refresh</Button>
       </div>
     );
   }
@@ -619,14 +619,19 @@ export default () => {
   };
 
   return (
-    <div>
+    <div className={styles.content}>
       <p>Address： {account}</p>
-      <p>Balance：{balance / LAMPORTS_PER_SOL} SOL</p>
       <p>
-        <Button onClick={() => airdropToken(account)}>airdrop</Button>
+        Balance：{balance / LAMPORTS_PER_SOL} SOL{' '}
+        <Button
+          className={styles.airdropBtn}
+          onClick={() => airdropToken(account)}
+        >
+          airdrop
+        </Button>
       </p>
 
-      <MintPannel></MintPannel>
+      {/* <MintPannel></MintPannel> */}
 
       <div className={styles.wrapInput}>
         <Input

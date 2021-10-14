@@ -4,6 +4,9 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  theme: {
+    '@primary-color': '#1ce9dd',
+  },
   routes: [
     // { path: '/', component: '@/pages/Home' },
     {

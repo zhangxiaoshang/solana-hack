@@ -108,16 +108,16 @@ export default (props: any) => {
               <img src={logo} alt="logo" />
             </a>
             <NavLink to="/mbtc" activeClassName={styles.activeNav}>
-              mBTC介绍
+              MBTC Introduction
             </NavLink>
             <NavLink to="/pool" activeClassName={styles.activeNav}>
-              算力池
+              Hash Pool
             </NavLink>
             <NavLink to="/swap" activeClassName={styles.activeNav}>
-              算力Swap
+              Hashrate Swap
             </NavLink>
             <NavLink to="/income" activeClassName={styles.activeNav}>
-              收益
+              Income
             </NavLink>
 
             {renderConnect()}

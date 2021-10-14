@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Layout, Menu, Card } from 'antd';
-import { Connection, PublicKey, ParsedAccountData } from '@solana/web3.js';
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import OrderBook from './OrderBook';
 import Rank from './Rank';
 import styles from './index.less';
@@ -131,9 +131,9 @@ export default () => {
   const getsignaturesforaddress = async () => {
     if (!connection) return null;
 
-    const address = '2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P';
+    // const address = '2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P';
     // const address = '2eRKQxuFv7xgzd6gYeyzmZCCNLzC2WWGJmTpG4yVWmCT';
-    const publicKey = new PublicKey(address);
+    const publicKey = new PublicKey(POOL_ACCOUNT);
     const signatures = await connection.getSignaturesForAddress(publicKey);
 
     return signatures;
@@ -154,13 +154,13 @@ export default () => {
 
   return (
     <div className={styles.content}>
-      <Card title={`算力池展示数据（${POOL_ACCOUNT}）`}>
+      <Card title={`Hash  Pool`}>
         <p>
-          <span>算力 </span>
-          <span>{accountInfo?.total}</span>
+          <span>HashRate: </span>
+          <span>{accountInfo?.total} T</span>
         </p>
         <p>
-          <span>开始时间 </span>
+          <span>Starting Time: </span>
           <span>
             {moment((accountInfo?.begin_time ?? 0) * 1000).format(
               'YYYY-MM-DD HH:mm:ss',
@@ -168,7 +168,7 @@ export default () => {
           </span>
         </p>
         <p>
-          <span>结束时间 </span>
+          <span>End Time: </span>
           <span>
             {moment((accountInfo?.end_time ?? 0) * 1000).format(
               'YYYY-MM-DD HH:mm:ss',
@@ -176,16 +176,16 @@ export default () => {
           </span>
         </p>
         <p>
-          <span>单位算力(T/D)价格 </span>
-          <span>{accountInfo?.price}</span>
+          <span>Unit Calculation (T/D) Price: </span>
+          <span>{accountInfo?.price / LAMPORTS_PER_SOL} SOL/T</span>
         </p>
       </Card>
 
-      <Card title="Order Book（2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P）">
-        {/* <OrderBook transactions={transactions}></OrderBook> */}
+      <Card title="Order Book">
+        <OrderBook transactions={transactions}></OrderBook>
       </Card>
 
-      <Card title="算力排行榜">
+      <Card title="HashRate Rankings">
         <Rank></Rank>
       </Card>
     </div>
