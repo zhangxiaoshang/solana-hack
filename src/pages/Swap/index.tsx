@@ -149,15 +149,15 @@ const getMyAccountInfo = async () => {
 const POOL_ACCOUNT = 'CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5';
 const URL = 'https://api.devnet.solana.com';
 
-const fromWallet = {
-  publicKey: new PublicKey('29thr5pNLD6vgh7HfFCuieT6RWbjqKprYRA2H8kDSFNH'),
-  secretKey: Uint8Array.from([
-    32, 116, 57, 52, 16, 61, 181, 175, 49, 154, 14, 49, 53, 249, 62, 223, 64,
-    198, 66, 94, 252, 221, 140, 151, 241, 118, 88, 32, 153, 127, 33, 87, 17, 34,
-    203, 170, 224, 96, 174, 119, 15, 156, 31, 125, 118, 43, 102, 165, 33, 252,
-    201, 143, 41, 74, 155, 254, 28, 67, 172, 121, 153, 112, 16, 18,
-  ]),
-};
+// const fromWallet = {
+//   publicKey: new PublicKey('29thr5pNLD6vgh7HfFCuieT6RWbjqKprYRA2H8kDSFNH'),
+//   secretKey: Uint8Array.from([
+//     32, 116, 57, 52, 16, 61, 181, 175, 49, 154, 14, 49, 53, 249, 62, 223, 64,
+//     198, 66, 94, 252, 221, 140, 151, 241, 118, 88, 32, 153, 127, 33, 87, 17, 34,
+//     203, 170, 224, 96, 174, 119, 15, 156, 31, 125, 118, 43, 102, 165, 33, 252,
+//     201, 143, 41, 74, 155, 254, 28, 67, 172, 121, 153, 112, 16, 18,
+//   ]),
+// };
 
 let connection: any = null;
 let programId;
@@ -173,7 +173,7 @@ export default () => {
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(0);
   const [mbitcoinInfo, setMbitcoinInfo] = useState<any>(null);
-  // const [ataInfo, setAtaInfo] = useState<any>(null);
+  const [ataInfo, setAtaInfo] = useState<any>(null);
   const [myAccountInfo, setMyAccountInfo] = useState<any>(null);
 
   const [buyLoading, setBuyLoading] = useState(false);
@@ -185,11 +185,11 @@ export default () => {
 
   const setup = async () => {
     // 链接钱包
-    const _account = await eagerlyConnecting();
+    const _address = await eagerlyConnecting();
     // 创建连接
     connection = await new Connection(URL);
     // 获取余额
-    const publicKey = new PublicKey(_account);
+    const publicKey = new PublicKey(_address);
     const _balance = await connection.getBalance(publicKey);
     // 获取mint地址
     const _poolInfo = await getPoolInfo();
@@ -200,34 +200,36 @@ export default () => {
     const _mbitcoinInfo = await connection.getParsedAccountInfo(
       new PublicKey(_poolInfo.mbitcoinAccount),
     );
+
+    console.log('_ataInfo', _ataInfo);
     console.log('_poolInfo', _poolInfo);
     console.log('_mbitcoinInfo', _mbitcoinInfo);
 
     // 构建mint实例
-    const mint = new splToken.Token(
-      connection,
-      new PublicKey(mintAddr),
-      splToken.TOKEN_PROGRAM_ID,
-      fromWallet,
-    );
+    // const mint = new splToken.Token(
+    //   connection,
+    //   new PublicKey(mintAddr),
+    //   splToken.TOKEN_PROGRAM_ID,
+    //   fromWallet,
+    // );
 
     // Get the token account of the fromWallet Solana address, if it does not exist, create it
-    fromTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
-      fromWallet.publicKey,
-    );
+    // fromTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
+    //   fromWallet.publicKey,
+    // );
 
     //get the token account of the toWallet Solana address, if it does not exist, create it
-    toTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
-      new PublicKey(mintAddr),
-    );
+    // toTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
+    //   new PublicKey(mintAddr),
+    // );
 
-    const _myAccountInfo = await getMyAccountInfo();
-    console.log('_myAccountInfo', _myAccountInfo);
+    // const _myAccountInfo = await getMyAccountInfo();
+    // console.log('_myAccountInfo', _myAccountInfo);
 
     setBalance(_balance);
     setPoolInfo(_poolInfo);
-    // setAtaInfo(_ataInfo.value.data.parsed.info);
-    setMyAccountInfo(_myAccountInfo.value.data.parsed.info);
+    setAtaInfo(_ataInfo.value.data.parsed.info);
+    // setMyAccountInfo(_myAccountInfo.value.data.parsed.info);
     setMbitcoinInfo(_mbitcoinInfo.value.data.parsed.info);
   };
 
@@ -235,12 +237,12 @@ export default () => {
   const eagerlyConnecting = async () => {
     try {
       const resp = await window.solana.connect({ onlyIfTrusted: true });
-      const _account = resp.publicKey.toString();
-      setAccount(_account);
+      const _address = resp.publicKey.toString();
+      setAccount(_address);
 
       console.log(resp);
 
-      return _account;
+      return _address;
     } catch (error) {
       console.error(error);
     }
@@ -260,16 +262,66 @@ export default () => {
   };
 
   const handleBuy = async () => {
+    if (!account) {
+      message.error('connect wallet please');
+      return null;
+    }
+
     setBuyLoading(true);
     programId = new PublicKey('9Gc4tyo14gQRxvajKvtqgoHRtTq1HimS1hFbTwDgJ6x8');
     stateAccount = new PublicKey(POOL_ACCOUNT); // CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5
+
+    // 固定
+    const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+    );
+    //
+    // const mintPubkey = new PublicKey(
+    //   '4MwqK7tyGtbajszWgkPTPQcZsybKXXNGLUUr1FMomq5N',
+    // );
+    const mintPubkey = new PublicKey(ataInfo.mint);
+
+    const associatedAddress = await splToken.Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      splToken.TOKEN_PROGRAM_ID,
+      mintPubkey,
+      // fromWallet.publicKey,
+      new PublicKey(account),
+    );
+    console.log(associatedAddress, associatedAddress.toString());
+    const associatedInfo = await connection.getAccountInfo(associatedAddress);
+    if (associatedInfo == null) {
+      const transaction = await new Transaction().add(
+        splToken.Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          splToken.TOKEN_PROGRAM_ID,
+          mintPubkey,
+          associatedAddress,
+          new PublicKey(account),
+          new PublicKey(account),
+        ),
+      );
+
+      let { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = new PublicKey(account);
+
+      const signedTransaction = await window.solana.signTransaction(
+        transaction,
+      );
+
+      console.log('signedTransaction', signedTransaction);
+      const signature = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+      );
+
+      console.log('signature1: ', signature);
+    }
 
     const PDA = await PublicKey.findProgramAddress(
       [Buffer.from('atoken')],
       programId,
     );
-
-    console.log('toTokenAccount.address', toTokenAccount.address.toBase58());
 
     // 用户购买数量
     const amount = volume;
@@ -277,7 +329,7 @@ export default () => {
       programId: programId,
       keys: [
         { pubkey: stateAccount, isSigner: false, isWritable: true },
-        { pubkey: fromWallet.publicKey, isSigner: true, isWritable: false }, // fromWallet 是用户钱包
+        { pubkey: new PublicKey(account), isSigner: true, isWritable: false }, // fromWallet 是用户钱包
         {
           pubkey: poolInfo.paymentAccount,
           isSigner: false,
@@ -298,22 +350,46 @@ export default () => {
           isSigner: false,
           isWritable: true,
         },
-        { pubkey: fromTokenAccount.address, isSigner: false, isWritable: true },
+        {
+          pubkey: associatedAddress.toString(),
+          isSigner: false,
+          isWritable: true,
+        },
         { pubkey: PDA[0], isSigner: false, isWritable: false },
       ],
       data: Buffer.from(Uint8Array.of(1, ...new BN(amount).toArray('le', 8))),
     });
 
     try {
-      const sig = await connection.sendTransaction(
-        new Transaction().add(buyix),
-        [fromWallet],
-        { skipPreflight: false, preflightCommitment: 'singleGossip' },
+      const transaction = await new Transaction().add(buyix);
+      console.log('transaction', transaction);
+
+      let { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = new PublicKey(account);
+
+      console.log('account', account);
+      console.log('transaction.feePayer', transaction.feePayer);
+
+      const signedTransaction = await window.solana.signTransaction(
+        transaction,
       );
-      console.log(sig);
-      message.success('success');
+
+      console.log('signedTransaction', signedTransaction);
+      const signature = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+      );
+
+      // const sig = await connection.sendTransaction(
+      //   new Transaction().add(buyix),
+      //   [fromWallet],
+      //   { skipPreflight: false, preflightCommitment: 'singleGossip' },
+      // );
+      console.log(signature);
+      message.success(signature);
     } catch (error: any) {
       message.error(error.message);
+      console.log(error);
     }
 
     setBuyLoading(false);
@@ -410,13 +486,13 @@ export default () => {
       <div>
         <h2>Mint</h2>
         <p>总算力: {poolInfo?.total}</p>
-        <p>矿池收益: {mbitcoinInfo?.tokenAmount.uiAmount}</p>
+        {/* <p>矿池收益: {mbitcoinInfo?.tokenAmount.uiAmount}</p> */}
 
-        <p>我的算力: {myAccountInfo.tokenAmount.uiAmount}</p>
+        {/* <p>我的算力: {myAccountInfo.tokenAmount.uiAmount}</p> */}
         <p>
           我的收益:
-          {(myAccountInfo.tokenAmount.uiAmount / poolInfo?.total) *
-            mbitcoinInfo?.tokenAmount.uiAmount}{' '}
+          {/* {(myAccountInfo.tokenAmount.uiAmount / poolInfo?.total) *
+            mbitcoinInfo?.tokenAmount.uiAmount}{' '} */}
         </p>
         <Button loading={harvestLoading} onClick={handleHarvest}>
           Harvest
