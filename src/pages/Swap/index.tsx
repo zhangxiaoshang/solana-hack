@@ -176,6 +176,9 @@ export default () => {
   // const [ataInfo, setAtaInfo] = useState<any>(null);
   const [myAccountInfo, setMyAccountInfo] = useState<any>(null);
 
+  const [buyLoading, setBuyLoading] = useState(false);
+  const [harvestLoading, setHarvestLoading] = useState(false);
+
   useEffect(() => {
     setup();
   }, []);
@@ -257,6 +260,7 @@ export default () => {
   };
 
   const handleBuy = async () => {
+    setBuyLoading(true);
     programId = new PublicKey('9Gc4tyo14gQRxvajKvtqgoHRtTq1HimS1hFbTwDgJ6x8');
     stateAccount = new PublicKey(POOL_ACCOUNT); // CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5
 
@@ -311,6 +315,84 @@ export default () => {
     } catch (error: any) {
       message.error(error.message);
     }
+
+    setBuyLoading(false);
+  };
+
+  const handleHarvest = async () => {
+    setHarvestLoading(true);
+    programId = new PublicKey('9Gc4tyo14gQRxvajKvtqgoHRtTq1HimS1hFbTwDgJ6x8');
+    stateAccount = new PublicKey(POOL_ACCOUNT); // CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5
+
+    const mintMbitcoinPubkey = new PublicKey(
+      'oRKQnt5NsHgmDWuyGAfSj648YvrAUEt1yGe8N1f4ZFr',
+    );
+    const mintAtokenPubkey = new PublicKey(
+      '4MwqK7tyGtbajszWgkPTPQcZsybKXXNGLUUr1FMomq5N',
+    );
+
+    const mbitcoinMint = new splToken.Token(
+      connection,
+      mintMbitcoinPubkey,
+      splToken.TOKEN_PROGRAM_ID,
+      fromWallet,
+    );
+    const atokenMint = new splToken.Token(
+      connection,
+      mintAtokenPubkey,
+      splToken.TOKEN_PROGRAM_ID,
+      fromWallet,
+    );
+
+    const walletAtokenAccount =
+      await atokenMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
+    const walletMbitcoinAccount =
+      await mbitcoinMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
+    const PDA = await PublicKey.findProgramAddress(
+      [Buffer.from('mining-bitcoin')],
+      programId,
+    );
+    const harvest_ix = new TransactionInstruction({
+      programId: programId,
+      keys: [
+        { pubkey: fromWallet.publicKey, isSigner: true, isWritable: false },
+        { pubkey: stateAccount, isSigner: false, isWritable: false },
+        { pubkey: poolInfo.atokenAccount, isSigner: false, isWritable: false },
+        {
+          pubkey: walletAtokenAccount.address,
+          isSigner: false,
+          isWritable: false,
+        },
+        { pubkey: poolInfo.mbitcoinAccount, isSigner: false, isWritable: true },
+        {
+          pubkey: splToken.TOKEN_PROGRAM_ID,
+          isSigner: false,
+          isWritable: false,
+        },
+        {
+          pubkey: walletMbitcoinAccount.address,
+          isSigner: false,
+          isWritable: true,
+        },
+        { pubkey: PDA[0], isSigner: false, isWritable: false },
+      ],
+      data: Buffer.from(Uint8Array.of(2)),
+    });
+
+    try {
+      const sig = await connection.sendTransaction(
+        new Transaction().add(harvest_ix),
+        [fromWallet],
+        { skipPreflight: false, preflightCommitment: 'singleGossip' },
+      );
+      console.log(sig);
+      message.success(sig);
+    } catch (error: any) {
+      message.error(error.message);
+      console.error(error);
+    }
+
+    setHarvestLoading(false);
   };
 
   if (!account) {
@@ -336,6 +418,9 @@ export default () => {
           {(myAccountInfo.tokenAmount.uiAmount / poolInfo?.total) *
             mbitcoinInfo?.tokenAmount.uiAmount}{' '}
         </p>
+        <Button loading={harvestLoading} onClick={handleHarvest}>
+          Harvest
+        </Button>
       </div>
     );
   };
@@ -365,7 +450,12 @@ export default () => {
           size="large"
           value={poolInfo?.price / LAMPORTS_PER_SOL}
         />
-        <Button onClick={handleBuy} size="large" className={styles.buyBtn}>
+        <Button
+          onClick={handleBuy}
+          size="large"
+          className={styles.buyBtn}
+          loading={buyLoading}
+        >
           购买
         </Button>
       </div>
