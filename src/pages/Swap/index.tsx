@@ -216,7 +216,10 @@ export default () => {
     //   new PublicKey(mintAddr),
     // );
 
-    const _myAccountInfo = await getMyAccountInfo();
+    const _myAccountInfo = await getMyAccountInfo(
+      _address,
+      _ataInfo.value.data.parsed.info,
+    );
     console.log('_myAccountInfo', _myAccountInfo);
 
     setBalance(_balance);
@@ -389,6 +392,8 @@ export default () => {
   };
 
   const handleHarvest = async () => {
+    if (!account) return null;
+
     setHarvestLoading(true);
     programId = new PublicKey('9Gc4tyo14gQRxvajKvtqgoHRtTq1HimS1hFbTwDgJ6x8');
     stateAccount = new PublicKey(POOL_ACCOUNT); // CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5
@@ -400,23 +405,105 @@ export default () => {
       '4MwqK7tyGtbajszWgkPTPQcZsybKXXNGLUUr1FMomq5N',
     );
 
-    const mbitcoinMint = new splToken.Token(
-      connection,
-      mintMbitcoinPubkey,
-      splToken.TOKEN_PROGRAM_ID,
-      fromWallet,
-    );
-    const atokenMint = new splToken.Token(
-      connection,
-      mintAtokenPubkey,
-      splToken.TOKEN_PROGRAM_ID,
-      fromWallet,
-    );
+    // const mbitcoinMint = new splToken.Token(
+    //   connection,
+    //   mintMbitcoinPubkey,
+    //   splToken.TOKEN_PROGRAM_ID,
+    //   fromWallet,
+    // );
+    // const atokenMint = new splToken.Token(
+    //   connection,
+    //   mintAtokenPubkey,
+    //   splToken.TOKEN_PROGRAM_ID,
+    //   fromWallet,
+    // );
 
-    const walletAtokenAccount =
-      await atokenMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
-    const walletMbitcoinAccount =
-      await mbitcoinMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
+    // const walletAtokenAccount =
+    //   await atokenMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
+    // const walletMbitcoinAccount =
+    //   await mbitcoinMint.getOrCreateAssociatedAccountInfo(fromWallet.publicKey);
+
+    // 固定
+    const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+    );
+    const mintPubkey = new PublicKey(ataInfo.mint);
+    const mbitcoinMintPubkey = new PublicKey(mbitcoinInfo.mint);
+    console.log('ataInfo.mint', ataInfo.mint);
+    console.log('mbitcoinInfo.mint', mbitcoinInfo.mint);
+
+    const walletAtokenAddress = await splToken.Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      splToken.TOKEN_PROGRAM_ID,
+      mintPubkey,
+      new PublicKey(account),
+    );
+    const walletAtokenInfo = await connection.getAccountInfo(
+      walletAtokenAddress,
+    );
+    console.log('walletAtokenInfo', walletAtokenInfo);
+    if (walletAtokenInfo == null) {
+      const transaction = await new Transaction().add(
+        splToken.Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          splToken.TOKEN_PROGRAM_ID,
+          mintPubkey,
+          walletAtokenAddress,
+          new PublicKey(account),
+          new PublicKey(account),
+        ),
+      );
+
+      let { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = new PublicKey(account);
+
+      const signedTransaction = await window.solana.signTransaction(
+        transaction,
+      );
+
+      const signature = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+      );
+    }
+
+    const walletMbitcoinAddress =
+      await splToken.Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        splToken.TOKEN_PROGRAM_ID,
+        mbitcoinMintPubkey,
+        new PublicKey(account),
+      );
+    const walletMbitcoinInfo = await connection.getAccountInfo(
+      walletMbitcoinAddress,
+    );
+    console.log('walletMbitcoinInfo', walletMbitcoinInfo);
+
+    if (walletMbitcoinInfo == null) {
+      const transaction = await new Transaction().add(
+        splToken.Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          splToken.TOKEN_PROGRAM_ID,
+          mbitcoinMintPubkey,
+          walletMbitcoinAddress,
+          new PublicKey(account),
+          new PublicKey(account),
+        ),
+      );
+
+      let { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = new PublicKey(account);
+
+      const signedTransaction = await window.solana.signTransaction(
+        transaction,
+      );
+
+      const signature = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+      );
+    }
+
     const PDA = await PublicKey.findProgramAddress(
       [Buffer.from('mining-bitcoin')],
       programId,
@@ -424,11 +511,11 @@ export default () => {
     const harvest_ix = new TransactionInstruction({
       programId: programId,
       keys: [
-        { pubkey: fromWallet.publicKey, isSigner: true, isWritable: false },
+        { pubkey: new PublicKey(account), isSigner: true, isWritable: false },
         { pubkey: stateAccount, isSigner: false, isWritable: false },
         { pubkey: poolInfo.atokenAccount, isSigner: false, isWritable: false },
         {
-          pubkey: walletAtokenAccount.address,
+          pubkey: walletAtokenAddress,
           isSigner: false,
           isWritable: false,
         },
@@ -439,7 +526,7 @@ export default () => {
           isWritable: false,
         },
         {
-          pubkey: walletMbitcoinAccount.address,
+          pubkey: walletMbitcoinAddress,
           isSigner: false,
           isWritable: true,
         },
@@ -449,13 +536,28 @@ export default () => {
     });
 
     try {
-      const sig = await connection.sendTransaction(
-        new Transaction().add(harvest_ix),
-        [fromWallet],
-        { skipPreflight: false, preflightCommitment: 'singleGossip' },
+      // const sig = await connection.sendTransaction(
+      //   new Transaction().add(harvest_ix),
+      //   [fromWallet],
+      //   { skipPreflight: false, preflightCommitment: 'singleGossip' },
+      // );
+
+      const transaction = await new Transaction().add(harvest_ix);
+
+      let { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = new PublicKey(account);
+
+      const signedTransaction = await window.solana.signTransaction(
+        transaction,
       );
-      console.log(sig);
-      message.success(sig);
+
+      const signature = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+      );
+
+      console.log(signature);
+      message.success(signature);
     } catch (error: any) {
       message.error(error.message);
       console.error(error);
@@ -464,20 +566,20 @@ export default () => {
     setHarvestLoading(false);
   };
 
-  const getMyAccountInfo = async () => {
-    if (!account) return null;
+  const getMyAccountInfo = async (_address: string, _ataInfo) => {
+    if (!_address) return null;
 
     // 固定
     const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
     );
-    const mintPubkey = new PublicKey(ataInfo.mint);
+    const mintPubkey = new PublicKey(_ataInfo.mint);
 
     const associatedAddress = await splToken.Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       splToken.TOKEN_PROGRAM_ID,
       mintPubkey,
-      new PublicKey(account),
+      new PublicKey(_address),
     );
 
     const resp = await connection.getParsedAccountInfo(associatedAddress);
