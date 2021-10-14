@@ -17,7 +17,7 @@ export default defineConfig({
       ],
     },
 
-    { path: '*', component: '@/pages/pool' },
+    { path: '*', component: '@/pages/' },
   ],
   fastRefresh: {},
 });

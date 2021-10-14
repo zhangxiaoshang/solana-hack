@@ -138,7 +138,7 @@ export default () => {
       </Card>
 
       <Card title="Order Book（2tfTNiBZGkbF7iitcjhYrNhQeww6VPokHcebhjC5di4P）">
-        <OrderBook transactions={transactions}></OrderBook>
+        {/* <OrderBook transactions={transactions}></OrderBook> */}
       </Card>
 
       <Card title="算力排行榜">
