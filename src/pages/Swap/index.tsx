@@ -124,7 +124,7 @@ const getPoolInfo = async () => {
   return poolData;
 };
 
-const getATokenMint = async (accountInfo: IAccountInfo) => {
+const getATokenInfo = async (accountInfo: IAccountInfo) => {
   try {
     const { atokenAccount } = accountInfo;
     const publicKey = new PublicKey(atokenAccount);
@@ -137,13 +137,6 @@ const getATokenMint = async (accountInfo: IAccountInfo) => {
   } catch (error) {
     return null;
   }
-};
-
-const getMyAccountInfo = async () => {
-  const resp = await connection.getParsedAccountInfo(fromTokenAccount.address);
-
-  console.log('getMyAccountInfo', resp);
-  return resp;
 };
 
 const POOL_ACCOUNT = 'CFEqmTL1Scw43g8RkB6KxXRTsYNx65JrFyFx6RWKp5n5';
@@ -193,7 +186,7 @@ export default () => {
     const _balance = await connection.getBalance(publicKey);
     // 获取mint地址
     const _poolInfo = await getPoolInfo();
-    const _ataInfo = await getATokenMint(_poolInfo);
+    const _ataInfo = await getATokenInfo(_poolInfo);
     const mintAddr = _ataInfo.value.data.parsed.info.mint;
 
     // 获取挖矿收益
@@ -223,13 +216,13 @@ export default () => {
     //   new PublicKey(mintAddr),
     // );
 
-    // const _myAccountInfo = await getMyAccountInfo();
-    // console.log('_myAccountInfo', _myAccountInfo);
+    const _myAccountInfo = await getMyAccountInfo();
+    console.log('_myAccountInfo', _myAccountInfo);
 
     setBalance(_balance);
     setPoolInfo(_poolInfo);
     setAtaInfo(_ataInfo.value.data.parsed.info);
-    // setMyAccountInfo(_myAccountInfo.value.data.parsed.info);
+    setMyAccountInfo(_myAccountInfo.value.data.parsed.info);
     setMbitcoinInfo(_mbitcoinInfo.value.data.parsed.info);
   };
 
@@ -471,6 +464,28 @@ export default () => {
     setHarvestLoading(false);
   };
 
+  const getMyAccountInfo = async () => {
+    if (!account) return null;
+
+    // 固定
+    const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+    );
+    const mintPubkey = new PublicKey(ataInfo.mint);
+
+    const associatedAddress = await splToken.Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      splToken.TOKEN_PROGRAM_ID,
+      mintPubkey,
+      new PublicKey(account),
+    );
+
+    const resp = await connection.getParsedAccountInfo(associatedAddress);
+
+    console.log('getMyAccountInfo', resp);
+    return resp;
+  };
+
   if (!account) {
     return (
       <div className={styles.errorContent}>
@@ -486,13 +501,13 @@ export default () => {
       <div>
         <h2>Mint</h2>
         <p>总算力: {poolInfo?.total}</p>
-        {/* <p>矿池收益: {mbitcoinInfo?.tokenAmount.uiAmount}</p> */}
+        <p>矿池收益: {mbitcoinInfo?.tokenAmount.uiAmount}</p>
 
-        {/* <p>我的算力: {myAccountInfo.tokenAmount.uiAmount}</p> */}
+        <p>我的算力: {myAccountInfo.tokenAmount.uiAmount}</p>
         <p>
           我的收益:
-          {/* {(myAccountInfo.tokenAmount.uiAmount / poolInfo?.total) *
-            mbitcoinInfo?.tokenAmount.uiAmount}{' '} */}
+          {(myAccountInfo.tokenAmount.uiAmount / poolInfo?.total) *
+            mbitcoinInfo?.tokenAmount.uiAmount}{' '}
         </p>
         <Button loading={harvestLoading} onClick={handleHarvest}>
           Harvest
